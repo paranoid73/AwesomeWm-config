@@ -46,6 +46,9 @@ local profile = widg.profile
 -- separator
 local separator = util.separator.pad(1)
 
+-- layouts
+local al = awful.layout.layouts
+
 -- Screen setup
 awful.screen.connect_for_each_screen(function(s)
     -- wallpaper
@@ -56,8 +59,8 @@ awful.screen.connect_for_each_screen(function(s)
         awful.button({}, 3, function() awful.layout.inc(-1) end),
         awful.button({}, 4, function() awful.layout.inc(1) end),
         awful.button({}, 5, function() awful.layout.inc(-1) end)))
-    -- Each screen has its own tag table.
-    awful.tag(env.taglist, s, awful.layout.layouts[1])
+
+    awful.tag(env.taglist, s, { al[2], al[1], al[10], al[4], al[10] })
 
     --taglist 
     s.mytaglist = core.taglist(s)

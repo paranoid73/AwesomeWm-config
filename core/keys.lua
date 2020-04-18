@@ -1,13 +1,12 @@
 -- Library
 --------------------------------------------------------
-local awful = require("awful")
-local env = require("environment")
-local gears = require("gears")
-local menubar = require("menubar")
+local awful         = require("awful")
+local env           = require("environment")
+local gears         = require("gears")
+local menubar       = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
-local switcher = require("core.appswicther")
-local widgets = require("widgets")
-
+local widgets       = require("widgets")
+local switcher      = require("core.appswitcher")
 env:init()
 
 -- Initialize variables
@@ -46,6 +45,24 @@ keys.globalkeys = gears.table.join(-- change layout
             if client.focus then
                 client.focus:raise()
             end
+        end,
+        { description = "go back", group = "client" }),
+
+    -- client switcher
+    awful.key({ env.alt, }, "Tab",
+        function()
+            switcher:show()
+        end,
+        { description = "go back", group = "client" }),
+
+    awful.key({ env.alt, }, "a",
+        function()
+            switcher:switch()
+        end,
+        { description = "go back", group = "client" }),
+    awful.key({ env.alt, }, "h",
+        function()
+            switcher:hide()
         end,
         { description = "go back", group = "client" }),
 
