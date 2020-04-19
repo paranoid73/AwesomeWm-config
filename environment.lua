@@ -41,13 +41,7 @@ end
 
 
 env.wrapper = function (widget,name,buttons)
-  local margin = { }
-
-  if name then
-   margin = beautiful.wrapper[name]
-  else
-   margin = { 0, 0, 0, 0}
-  end
+  local margin = beautiful.wrapper[name] or { 0, 0, 0, 0}
 
   if buttons then
 		widget:buttons(buttons)

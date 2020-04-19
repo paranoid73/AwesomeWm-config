@@ -6,12 +6,50 @@ local gears         = require("gears")
 local menubar       = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local widgets       = require("widgets")
-local switcher      = require("core.appswitcher")
+local appswitcher   = require("core.appswitcher")
 env:init()
 
 -- Initialize variables
 -------------------------------------------------
 local keys = {}
+
+-- Appswitcher widget
+------------------------------------------------------------
+local appswitcher_keys = {
+    {
+        { env.mod }, "a", function() appswitcher:switch() end,
+        { description = "Select next app", group = "Navigation" }
+    },
+    {
+        { env.mod, "Shift" }, "a", function() appswitcher:switch() end,
+        {} -- hidden key
+    },
+    {
+        {}, "Super_L", function() appswitcher:hide() end,
+        { description = "Activate and exit", group = "Action" }
+    },
+    {
+        { env.mod }, "Super_L", function() appswitcher:hide() end,
+        {} -- hidden key
+    },
+    {
+        { env.mod, "Shift" }, "Super_L", function() appswitcher:hide() end,
+        {} -- hidden key
+    },
+    {
+        {}, "Return", function() appswitcher:hide() end,
+        { description = "Activate and exit", group = "Action" }
+    },
+    {
+        {}, "Escape", function() appswitcher:hide(true) end,
+        { description = "Exit", group = "Action" }
+    },
+    {
+        { env.mod }, "Escape", function() appswitcher:hide(true) end,
+        {} -- hidden key
+    },
+}
+appswitcher:set_keys(appswitcher_keys)
 
 -- global keys
 --------------------------------------------------------------------------------------
@@ -38,32 +76,15 @@ keys.globalkeys = gears.table.join(-- change layout
     awful.key({}, "XF86PowerOff", function() widgets.exit_screen.show() end,
         { description = "quit awesome", group = "awesome" }),
 
-    -- client switcher
+    -- Tag navigation
     awful.key({ env.mod, }, "Tab",
         function()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
+            awful.tag.history.restore()
         end,
-        { description = "go back", group = "client" }),
+        { description = "Swith to previos tag by history", group = "Tag navigation" }),
 
     -- client switcher
-    awful.key({ env.alt, }, "Tab",
-        function()
-            switcher:show()
-        end,
-        { description = "go back", group = "client" }),
-
-    awful.key({ env.alt, }, "a",
-        function()
-            switcher:switch()
-        end,
-        { description = "go back", group = "client" }),
-    awful.key({ env.alt, }, "h",
-        function()
-            switcher:hide()
-        end,
+    awful.key({ env.mod, }, "a",function() appswitcher:show() end,
         { description = "go back", group = "client" }),
 
     -- lock screen
@@ -105,16 +126,6 @@ keys.globalkeys = gears.table.join(-- change layout
         awful.util.spawn("xbacklight -inc 10")
     end),
 
-    -- restore minimized windows
-    awful.key({ env.mod, "Control" }, "n",
-        function()
-            local c = awful.client.restore()
-            -- Focus restored client
-            if c then
-                c:emit_signal("request::activate", "key.unminimize", { raise = true })
-            end
-        end, { description = "restore minimized", group = "client" }),
-
     -- screenshots
     awful.key({}, "Print", function()
         awful.util.spawn(env.themedir .. "/scripts/screenshot.sh ")
@@ -127,36 +138,21 @@ keys.globalkeys = gears.table.join(-- change layout
     awful.key({ env.mod }, "p", function() menubar.show() end,
         { description = "show the menubar", group = "launcher" }))
 
-keys.clientkeys = gears.table.join(-- Move to edge or swap by direction
-    awful.key({ env.mod, "Shift" }, "Down", function(c)
-        keys.move_to_edge(c, "down")
-    end),
-    awful.key({ env.mod, "Shift" }, "Up", function(c)
-        keys.move_to_edge(c, "up")
-    end),
-    awful.key({ env.mod, "Shift" }, "Left", function(c)
-        keys.move_to_edge(c, "left")
-    end),
-    awful.key({ env.mod, "Shift" }, "Right", function(c)
-        keys.move_to_edge(c, "right")
-    end),
+keys.clientkeys = gears.table.join(
     -- sticky client
     awful.key({ env.mod, }, "s", function(c) c.sticky = not c.sticky end,
         { description = "sticky client ", group = "client" }),
-
     -- toggle fullscreen
     awful.key({ env.mod, }, "f",
         function(c)
             c.fullscreen = not c.fullscreen
             c:raise()
         end, { description = "toggle fullscreen", group = "client" }),
-
     -- minimize
     awful.key({ env.mod, }, "n",
         function(c)
             c.minimized = true
         end, { description = "minimize", group = "client" }),
-
     -- (un)maximize vertically
     awful.key({ env.mod, "Shift" }, "m",
         function(c)
@@ -170,11 +166,9 @@ keys.clientkeys = gears.table.join(-- Move to edge or swap by direction
             c.maximized = not c.maximized
             c:raise()
         end, { description = "(un)maximize horizontally", group = "client" }),
-
     -- toggle keep on top
     awful.key({ env.mod, }, "t", function(c) c.ontop = not c.ontop end,
         { description = "toggle keep on top", group = "client" }),
-
     -- kill client    
     awful.key({ env.mod }, "c",
         function(c)

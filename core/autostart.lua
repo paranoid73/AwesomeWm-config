@@ -1,13 +1,33 @@
-local r = require("core.runonce")
+-----------------------------------------------------------------------------------------------------------------------
+--                                              Autostart app list                                                   --
+-----------------------------------------------------------------------------------------------------------------------
 
- local run_on_start_up = {
-    "compton -CGb ", -- Equalizer
-    "nm-applet", -- NetworkManager Applet
-    "redshift-gtk", -- Redshift
-    "light-locker -- Auto lock"
- }
+-- Grab environment
+local awful = require("awful")
 
-  
-for _, app in ipairs(run_on_start_up) do
-    r.run(app)
+-- Initialize tables and vars for module
+-----------------------------------------------------------------------------------------------------------------------
+local autostart = {}
+
+-- Application list function
+--------------------------------------------------------------------------------
+function autostart.run()
+	-- utils
+	awful.spawn.with_shell("compton")
+	awful.spawn.with_shell("nm-applet")
+
 end
+
+-- Read and commads from file and spawn them
+--------------------------------------------------------------------------------
+function autostart.run_from_file(file_)
+	local f = io.open(file_)
+	for line in f:lines() do
+		if line:sub(1, 1) ~= "#" then awful.spawn.with_shell(line) end
+	end
+	f:close()
+end
+
+-- End
+-----------------------------------------------------------------------------------------------------------------------
+return autostart

@@ -27,7 +27,7 @@ function progressbar.new()
 		row_num      = 3,
 		dot_size     = 5,
 		dot_gap_h    = 5,
-		color        = { main = "#b1222b", gray = "#575757" }
+		color        = { main = beautiful.color.orange, gray = "#575757" }
 	}
 
 

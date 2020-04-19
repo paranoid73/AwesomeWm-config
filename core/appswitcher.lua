@@ -68,10 +68,6 @@ local cache = {}
 -- key bindings
 appswitcher.keys.move = {
     {
-        {"Mod1"}, "Tab", function() appswitcher:switch() end,
-        { description = "Select next app", group = "Navigation" }
-    },
-    {
         {}, "Right", function() appswitcher:switch() end,
         { description = "Select next app", group = "Navigation" }
     },
@@ -91,6 +87,12 @@ appswitcher.keys.action = {
 
 appswitcher.keys.all = awful.util.table.join(appswitcher.keys.move, appswitcher.keys.action)
 
+appswitcher._fake_keys = {
+    {
+        {}, "N", nil,
+        { description = "Select app by key", group = "Navigation" }
+    },
+}
 
 function appswitcher:init()
     local style = {
@@ -115,6 +117,12 @@ function appswitcher:init()
         shape           = nil
     }
 
+    local iscf = 1 -- icon size correction factor
+    self._fake_keys[1][4].keyset = style.hotkeys
+    self:set_keys()
+
+    -- Create floating wibox for appswitcher widget
+    --------------------------------------------------------------------------------
     self.wibox = wibox({
         ontop        = true,
         bg           = style.color.wibox,
@@ -305,7 +313,9 @@ end
 
 -- Show appswitcher widget
 -----------------------------------------------------------------------------------------------------------------------
-function appswitcher:show()
+function appswitcher:show(args)
+    args = args or {}
+    local noaction = args.noaction
     -- start up
     if not self.wibox then self:init() end
     -- if wbox is already visible
@@ -324,6 +334,7 @@ function appswitcher:show()
     end
 
     self.clients_list = clients
+    cache.args = args
     -- setting wibox
     self.size_correction(#clients)
     -- center wibox
@@ -337,6 +348,7 @@ function appswitcher:show()
 
     self.index = awful.util.table.hasitem(self.clients_list, client.focus) or 1
     self.titlebox:set_markup(self.title_generator(self.clients_list[self.index]))
+    if not noaction then self:switch(args) end
     self.widget:emit_signal("widget::redraw_needed")
 
     self.wibox.visible = true

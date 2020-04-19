@@ -38,12 +38,15 @@ local sysmon = {
 }
 
 -- systray
+--local systray = core.systray
+
 local tray = {}
 tray.widget = core.systray
 
 tray.buttons = awful.util.table.join(
     awful.button({}, 1, function() core.systray:toggle() end)
 )
+
 
 -- systray
 local profile = widg.profile
@@ -110,9 +113,7 @@ awful.screen.connect_for_each_screen(function(s)
         },
         {
             layout = wibox.layout.align.horizontal,
-            env.wrapper(textclock, "profile"),
-            separator,
-            env.wrapper(tray.widget(),"profile",tray.buttons)
+            env.wrapper(tray.widget(), "profile",tray.buttons)
         }
     }
 end)

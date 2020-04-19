@@ -94,13 +94,18 @@ theme.layout_max  					= themes_path.."/icons/layouts/max.svg"
 theme.layout_floating  				= themes_path.."/icons/layouts/floating.svg"
 theme.layout_magnifier				= themes_path.."/icons/layouts/magnifier.svg"
 
-theme.layout_titeleft  				= themes_path.."/icons/layouts/tileleft.svg"
-theme.layout_titetop  				= themes_path.."/icons/layouts/tiletop.svg"
+theme.layout_tile	  				= themes_path.."/icons/layouts/tile.svg"
+theme.layout_tileleft 				= themes_path.."/icons/layouts/tileleft.svg"
+theme.layout_tiletop  				= themes_path.."/icons/layouts/tiletop.svg"
 theme.layout_tilebottom  			= themes_path.."/icons/layouts/tilebottom.svg"
 
-theme.layout_tile	  				= themes_path.."/icons/layouts/tile.svg"
+
 theme.layout_fairv	  				= themes_path.."/icons/layouts/fair.svg"
+theme.layout_fairh	  				= themes_path.."/icons/layouts/fair.svg"
 theme.layout_spiral  				= themes_path.."/icons/layouts/spiral.svg"
+
+theme.layout_cornernw	  			= themes_path.."/icons/layouts/cornernw.svg"
+theme.layout_dwindle 				= themes_path.."/icons/layouts/cornernw.svg"
 
 -- fullscreen
 theme.fullscreen_hide_border 		= true
