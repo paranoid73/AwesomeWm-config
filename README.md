@@ -29,7 +29,7 @@
 
 ## Screenshots
 
-![full_screen](resources/screenshots/2019.09.29-07.58.41.screenshot.png)
+![full_screen](resources/screenshots/2020-04-19-132346_1366x768_scrot.png)
 
 ## wishlist
 
@@ -37,7 +37,9 @@
 
 - [x] customize notification
 
-- [ ] add awesome wm client switcher
+- [x] add awesome wm client switcher
+
+- [x] customize titlebar
 
 ## Want to help ?
 
