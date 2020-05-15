@@ -13,7 +13,7 @@ theme.color 		= {
 	yellow	  	= "#C0B738",
 	red       	= "#D60B17",
 	green	  	= "#384d30",
-	green_dark	= "#091113",
+	green_dark	= "#49624c",
 	green_light	= "#C3FF10",
 	orange		= "#f68633",
 	white	  	= "#FFFFFF"
@@ -68,10 +68,10 @@ theme.bg_systray 					= theme.color.bg
 
 -- hotkey
 theme.hotkeys_label_bg				= theme.color.white
-theme.hotkeys_bg 					= theme.color.bg
+theme.hotkeys_bg 					= theme.color.black
 theme.hotkeys_fg 					= theme.color.text
 theme.hotkeys_border_width 			= 0
-theme.hotkeys_group_margin 			= 20
+theme.hotkeys_group_margin 			= 5
 
 -- notification
 theme.notification_font				=  "Roboto Condensed Bold 8"

@@ -64,5 +64,17 @@ awful.rules.rules = {
             floating = true,
             placement = awful.placement.centered,
         },
+    },
+    { 
+        rule = { instance = "chromium" },
+        properties = { tag = " WEB " } 
+    },
+    { 
+        rule = { instance = "thunar" },
+        properties = { tag = " FILES " } 
+    },
+    { 
+        rule = { instance = "code-oss" },
+        properties = { tag = " EDIT " } 
     }
 }

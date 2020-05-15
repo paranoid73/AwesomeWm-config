@@ -12,41 +12,83 @@ local util = require("utilities")
 local widg = require("widgets")
 
 
+
+
+
+-- Error handling
+if awesome.startup_errors then
+    naughty.notify({
+        preset = naughty.config.presets.critical,
+        title = "Oops, there were errors during startup!",
+        text = awesome.startup_errors
+    })
+end
+
+-- Handle runtime errors after startup
+do
+    local in_error = false
+    awesome.connect_signal("debug::error", function(err)
+        -- Make sure we don't go into an endless error loop
+        if in_error then return end
+        in_error = true
+
+        naughty.notify({
+            preset = naughty.config.presets.critical,
+            title = "Oops, an error happened!",
+            text = tostring(err)
+        })
+        in_error = false
+    end)
+end
+
 -------- environment
-------------------------------------------------------------------------------------
+-----------------------------------------------------------------
 local env = require("environment")
 env:init()
 require("core.rules")
-require("core.notification")
+
+-------- autostart
+local autostart = require("core.autostart")
+autostart.run()
 
 -- Layouts
 local layout = core.layouts
 layout:init()
 
 -- keys
-local keys = core.keys
+local keys          = core.keys
 
 --  Textclock
-local textclock = widg.textclock()
+local textclock     = {}
+textclock.widget    = widg.textclock()
+
+-- battery
+local battery       = {}
+battery.widget      = widg.battery()
+
+-- backlight
+local backlight     = {}
+backlight.widget    = widg.backlight()
 
 
--- sysmon
-local sysmon = {
-    battery = widg.battery,
-    backlight = widg.backlight,
-    volume = widg.volume,
-}
+-- volume
+local volume    = {}
+volume.widget   = widg.volume()
+volume.buttons  = awful.util.table.join(
+      awful.button({}, 4, function() widg.volume:increase() end),
+      awful.button({}, 5, function() widg.volume:decrease() end)
+)
 
 -- systray
-local tray = {}
-tray.widget = core.systray
+local tray      = {}
+tray.widget     = core.systray()
 
-tray.buttons = awful.util.table.join(
+tray.buttons    = awful.util.table.join(
     awful.button({}, 1, function() core.systray:toggle() end)
 )
 
 -- systray
-local profile = widg.profile
+local profile = widg.profile()
 
 -- separator
 local separator = util.separator.pad(1)
@@ -89,9 +131,9 @@ awful.screen.connect_for_each_screen(function(s)
             },
             {
                 layout = wibox.layout.align.horizontal,
-                env.wrapper(sysmon.backlight(), "battery"),
-                env.wrapper(sysmon.battery(), "battery"),
-                env.wrapper(sysmon.volume(), "volume")
+                env.wrapper(backlight.widget,"battery"),
+                env.wrapper(battery.widget,"battery"),
+                env.wrapper(volume.widget,"volume",volume.buttons)
             }
         }
 
@@ -102,7 +144,7 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.align.horizontal,
         {
             layout = wibox.layout.align.horizontal,
-            env.wrapper(profile(), "profile")
+            env.wrapper(profile, "profile")
         },
         {
             layout = wibox.layout.align.horizontal,
@@ -110,9 +152,9 @@ awful.screen.connect_for_each_screen(function(s)
         },
         {
             layout = wibox.layout.align.horizontal,
-            env.wrapper(textclock, "profile"),
+            env.wrapper(textclock.widget, "profile"),
             separator,
-            env.wrapper(tray.widget(),"profile",tray.buttons)
+            env.wrapper(tray.widget,"profile",tray.buttons)
         }
     }
 end)

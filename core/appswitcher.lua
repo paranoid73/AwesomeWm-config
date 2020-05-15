@@ -271,6 +271,7 @@ function appswitcher:init()
             cr:show_text(txt)
 
         end
+        collectgarbage()
     end
 
     -- Set widget and create title for wibox
@@ -346,7 +347,10 @@ function appswitcher:show(args)
     -- start keygrabber
     awful.keygrabber.run(self.keygrabber)
 
-    self.index = awful.util.table.hasitem(self.clients_list, client.focus) or 1
+    --self.index = awful.util.table.hasitem(self.clients_list, client.focus) or 2
+    self.index = 2
+
+
     self.titlebox:set_markup(self.title_generator(self.clients_list[self.index]))
     if not noaction then self:switch(args) end
     self.widget:emit_signal("widget::redraw_needed")

@@ -5,6 +5,7 @@ local env           = require("environment")
 local gears         = require("gears")
 local menubar       = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+
 local widgets       = require("widgets")
 local appswitcher   = require("core.appswitcher")
 env:init()
@@ -128,10 +129,10 @@ keys.globalkeys = gears.table.join(-- change layout
 
     -- screenshots
     awful.key({}, "Print", function()
-        awful.util.spawn(env.themedir .. "/scripts/screenshot.sh ")
+        awful.spawn.with_shell(env.themedir .. "/scripts/screenshot.sh ")
     end),
     awful.key({ env.mod }, "Print", function()
-        awful.util.spawn(env.themedir .. "/scripts/screenshot.sh -s")
+        awful.spawn.with_shell(env.themedir .. "/scripts/screenshot.sh -s")
     end),
 
     -- Menubar
