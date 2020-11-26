@@ -21,8 +21,8 @@ local positionx             = (width - width_exitscreen) / 2
 local positiony             = (height - height_exitscreen) / 2
 
 local alert_icon            = wibox.widget.imagebox(beautiful.exit_screen.icon)
-local warning_text          = util.text("WARNING SYSTEM", beautiful.exit_screen.title)
-local msg_widget            = util.text("DO YOU WANT TO EXIT FROM THE CURRENT SESSION  ?", beautiful.exit_screen.text)
+local warning_text          = util.label("WARNING SYSTEM", beautiful.exit_screen.title)
+local msg_widget            = util.label("DO YOU WANT TO EXIT FROM THE CURRENT SESSION  ?", beautiful.exit_screen.text)
 
 -- functions
 ------------------------------------

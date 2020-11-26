@@ -13,10 +13,10 @@ local autostart = {}
 --------------------------------------------------------------------------------
 function autostart.run()
 	-- utils
-	awful.spawn.with_shell("picom -b -C")
+	--awful.spawn.with_shell("picom -b -C")
 	awful.spawn.with_shell("nm-applet")
 	awful.spawn.with_shell("xmodmap .xmodmap.conf")
-	awful.spawn.with_shell("light-locker")
+	awful.spawn.with_shell("light-locker &")
 end
 
 -- Read and commads from file and spawn them

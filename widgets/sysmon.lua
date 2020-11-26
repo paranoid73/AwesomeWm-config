@@ -1,72 +1,70 @@
 -----------------------------------------------------------------------------------------------------------------------
---                                               RedFlat clock widget                                                --
+--                                                 RedFlat sysmon widget                                             --
 -----------------------------------------------------------------------------------------------------------------------
--- Text clock widget with date in tooltip (optional)
------------------------------------------------------------------------------------------------------------------------
--- Some code was taken from
------- awful.widget.textclock v3.5.2
------- (c) 2009 Julien Danjou
+-- Monitoring widget
 -----------------------------------------------------------------------------------------------------------------------
 
+-- Grab environment
+-----------------------------------------------------------------------------------------------------------------------
 local setmetatable = setmetatable
-local os = os
-local textbox = require("wibox.widget.textbox")
 local beautiful = require("beautiful")
-local gears = require("gears")
+local timer = require("gears.timer")
+
+local monitor = require("utilities.progressbar.plain")
+local redutil = require("utilities")
 
 -- Initialize tables and vars for module
 -----------------------------------------------------------------------------------------------------------------------
-local textclock = { mt = {} }
+local sysmon = { mt = {} }
 
 -- Generate default theme vars
 -----------------------------------------------------------------------------------------------------------------------
 local function default_style()
 	local style = {
-		font  = "Roboto Bold 12",
-		tooltip = {},
-		color = { text = "#aaaaaa" }
+		timeout = 5,
+		width   = 150,
+		widget  = monitor.new
 	}
 	return style
 end
 
--- Create a textclock widget. It draws the time it is in a textbox.
--- @param format The time format. Default is " %a %b %d, %H:%M ".
--- @param timeout How often update the time. Default is 60.
--- @return A textbox widget
+-- Create a new cpu monitor widget
 -----------------------------------------------------------------------------------------------------------------------
-function textclock.new(args, style)
+function sysmon.new(args, style)
 
 	-- Initialize vars
 	--------------------------------------------------------------------------------
 	args = args or {}
-	local timeformat = args.timeformat or "%H:%M"
-	local timeout = args.timeout or 60
-	style = default_style()
+	style = redutil.table.merge(default_style(), style or {})
 
-	-- Create widget
+	-- Create monitor widget
 	--------------------------------------------------------------------------------
-	local widg = textbox()
-	widg:set_font(style.font)
+	local widg = style.widget(style.monitor)
 
+	-- Set tooltip
+	--------------------------------------------------------------------------------
 
 	-- Set update timer
 	--------------------------------------------------------------------------------
-	local timer = gears.timer({ timeout = timeout })
-	timer:connect_signal("timeout",
-		function()
-			widg:set_markup('<span color="' .. style.color.text .. '">' .. os.date(timeformat) .. "</span>")
-		end)
-	timer:start()
-	timer:emit_signal("timeout")
+	widg._update = function()
+		local state = args.func(args.arg)
+		widg:set_value(state.value)
+		widg:set_alert(state.alert)
+	end
+
+	widg._timer = timer({ timeout = style.timeout })
+	widg._timer:connect_signal("timeout", function() widg._update() end)
+	widg._timer:start()
+	widg._timer:emit_signal("timeout")
 
 	--------------------------------------------------------------------------------
 	return widg
 end
 
--- Config metatable to call textclock module as function
+-- Config metatable to call module as function
 -----------------------------------------------------------------------------------------------------------------------
-function textclock.mt:__call(...)
-	return textclock.new(...)
+function sysmon.mt:__call(...)
+	return sysmon.new(...)
 end
 
-return setmetatable(textclock, textclock.mt)
+return setmetatable(sysmon, sysmon.mt)

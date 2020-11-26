@@ -4,6 +4,7 @@ local awful         = require("awful")
 local wibox     	= require("wibox")
 local beautiful 	= require("beautiful")
 local gears		 	= require("gears")
+local unpack		= unpack
 local read_cmd 		= require("utilities.read")
 local progressbar   = require("utilities.progressbar")
 
@@ -17,7 +18,7 @@ local setmetatable 	= setmetatable
 local function default_style()
 	local style = {
 		width   = 60,
-		dmargin = { -20, 0, 0, 0 },
+		dmargin = { -2, 0, 0, 0 },
 	}
 	return style
 end
@@ -59,13 +60,13 @@ function volume.new()
 	-----------------------------------------------------------
 	local dash = progressbar.volume()
 
-	local t = gears.timer({ timeout = 1 })
+	local t = gears.timer({ timeout = 5 })
 	t:connect_signal("timeout", function()
 		dash:set_value(volume.getValue())
 	end)
 	t:start()
 	--------------------------------------------------------------------------------
-	layout:add(wibox.container.margin(dash, unpack(style.dmargin)))
+	layout:add(wibox.container.margin(dash, style.dmargin))
 	--------------------------------------------------------------------------------
 	local widg = wibox.container.constraint(layout, "max", style.width)
 	

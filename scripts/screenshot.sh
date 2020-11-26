@@ -9,6 +9,7 @@ if [[ "$1" == "-s" ]]; then
   notify-send 'Select area to capture.' --urgency low
   maim -u -m 3 -s $FILENAME
   if [[ "$?" == "0" ]]; then
+  	canberra-gtk-play -i screen-capture
     notify-send "SCREENSHOT TAKEN AND SAVED IN ~/Pictures/Screenshots/" --urgency low -i $PHOTO_ICON_PATH
   fi
 else

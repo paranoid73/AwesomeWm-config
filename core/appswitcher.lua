@@ -7,6 +7,7 @@ local gears     = require("gears")
 local timer     = require("gears.timer")
 local util      = require("utilities")
 local wibox     = require("wibox")
+local unpack    = unpack or table.unpack
 
 local pixbuf
 local function load_pixbuf()
@@ -347,8 +348,7 @@ function appswitcher:show(args)
     -- start keygrabber
     awful.keygrabber.run(self.keygrabber)
 
-    --self.index = awful.util.table.hasitem(self.clients_list, client.focus) or 2
-    self.index = 2
+    self.index = awful.util.table.hasitem(self.clients_list, client.focus) or 1
 
 
     self.titlebox:set_markup(self.title_generator(self.clients_list[self.index]))

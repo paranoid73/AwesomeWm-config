@@ -14,7 +14,6 @@ local widg = require("widgets")
 
 
 
-
 -- Error handling
 if awesome.startup_errors then
     naughty.notify({
@@ -56,39 +55,45 @@ local layout = core.layouts
 layout:init()
 
 -- keys
-local keys          = core.keys
+local keys = core.keys
 
 --  Textclock
-local textclock     = {}
-textclock.widget    = widg.textclock()
+local textclock = {}
+textclock.widget = widg.textclock()
 
 -- battery
-local battery       = {}
-battery.widget      = widg.battery()
+local battery = {}
+battery.widget = widg.battery()
 
 -- backlight
-local backlight     = {}
-backlight.widget    = widg.backlight()
+local backlight = {}
+backlight.widget = widg.backlight()
 
 
 -- volume
-local volume    = {}
-volume.widget   = widg.volume()
-volume.buttons  = awful.util.table.join(
-      awful.button({}, 4, function() widg.volume:increase() end),
-      awful.button({}, 5, function() widg.volume:decrease() end)
-)
+local volume = {}
+volume.widget = widg.volume()
+volume.buttons = awful.util.table.join(awful.button({}, 4, function() widg.volume:increase() end),
+    awful.button({}, 5, function() widg.volume:decrease() end))
 
 -- systray
-local tray      = {}
-tray.widget     = core.systray()
+local tray = {}
+tray.widget = core.systray()
 
-tray.buttons    = awful.util.table.join(
-    awful.button({}, 1, function() core.systray:toggle() end)
-)
+tray.buttons = awful.util.table.join(awful.button({}, 1, function() core.systray:toggle() end))
 
 -- systray
 local profile = widg.profile()
+
+-- CPU usage
+local cpu = {}
+cpu.widget = widg.sysmon({ func = util.system.pformatted.cpu(80) },
+    { timeout = 2, monitor = { label = "CPU" } })
+
+-- RAM usage
+local ram = {}
+ram.widget = widg.sysmon({ func = util.system.pformatted.mem(80) },
+    { timeout = 2, monitor = { label = "RAM" } })
 
 -- separator
 local separator = util.separator.pad(1)
@@ -131,9 +136,9 @@ awful.screen.connect_for_each_screen(function(s)
             },
             {
                 layout = wibox.layout.align.horizontal,
-                env.wrapper(backlight.widget,"battery"),
-                env.wrapper(battery.widget,"battery"),
-                env.wrapper(volume.widget,"volume",volume.buttons)
+                env.wrapper(backlight.widget, "battery"),
+                env.wrapper(battery.widget, "battery"),
+                env.wrapper(volume.widget, "volume", volume.buttons)
             }
         }
 
@@ -151,21 +156,26 @@ awful.screen.connect_for_each_screen(function(s)
             env.wrapper(s.mytasklist, "tasklist")
         },
         {
-            layout = wibox.layout.align.horizontal,
-            env.wrapper(textclock.widget, "profile"),
+            layout = wibox.layout.fixed.horizontal,
             separator,
-            env.wrapper(tray.widget,"profile",tray.buttons)
+            env.wrapper(ram.widget, "profile"),
+            separator,
+            env.wrapper(cpu.widget, "profile"),
+            separator,
+            env.wrapper(tray.widget, "profile", tray.buttons),
+            separator,
+            env.wrapper(textclock.widget, "profile")
         }
     }
 end)
 
--- shortened tasklist's name 
-client.connect_signal("property::name", function(c)
-    local client_name = c.name
-    if string.len(client_name) > 35 then
-        c.name = string.sub(client_name, 1, 35)
-    end
-end)
+
+
+-- Titlebar setup
+-----------------------------------------------------------------------------------------------------------------------
+local titlebar = require("core.titlebar")
+titlebar:init()
+
 
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)

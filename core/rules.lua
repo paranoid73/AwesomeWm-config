@@ -36,7 +36,8 @@ awful.rules.rules = {
         rule_any = {
             class = { "MPlayer", "Mpv", "Subl3" },
             role = { "AlarmWindow", "pop-up" },
-            type = { "dialog" }
+            type = { "dialog" },
+            instance = { "DTA", "copyq", },
         },
         properties =
         {
@@ -54,6 +55,7 @@ awful.rules.rules = {
         callback = function(jetbrains)
             if jetbrains.skip_taskbar then
                 jetbrains.floating = true
+                jetbrains.placement = awful.placement.centered
             end
         end
     },
@@ -65,16 +67,20 @@ awful.rules.rules = {
             placement = awful.placement.centered,
         },
     },
-    { 
-        rule = { instance = "chromium" },
-        properties = { tag = " WEB " } 
+    {
+        rule_any = { class = { "code-oss", "jetbrains-%w+" } },
+        properties = { tag = " EDIT " }
     },
-    { 
-        rule = { instance = "thunar" },
-        properties = { tag = " FILES " } 
+    {
+        rule_any = { class = { "chromium", "firefox" } },
+        properties = { tag = " WEB " }
     },
-    { 
-        rule = { instance = "code-oss" },
-        properties = { tag = " EDIT " } 
+    {
+        rule_any = { class = { "thunar" } },
+        properties = { tag = " FILES "}
+    },
+    {
+        rule_any = { class = { "TelegramDesktop", "YACReaderLibrary", "YACReader","Skype" } },
+        properties = { tag = " OTHERS " }
     }
 }

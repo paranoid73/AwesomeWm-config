@@ -8,11 +8,24 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 
 local widgets       = require("widgets")
 local appswitcher   = require("core.appswitcher")
+
 env:init()
 
 -- Initialize variables
 -------------------------------------------------
 local keys = {}
+
+-- Top process list
+------------------------------------------------------------
+local top_keys_action = {
+	{
+		{ env.mod }, "/", function() redflat.float.top:hide() end,
+		{ description = "Close top list widget", group = "Action" }
+	},
+}
+-- close widget by the same key as showing
+widgets.top:set_keys(awful.util.table.join(widgets.top.keys.action, top_keys_action), "action")
+    
 
 -- Appswitcher widget
 ------------------------------------------------------------
@@ -62,6 +75,9 @@ keys.globalkeys = gears.table.join(-- change layout
     -- tag
     awful.key({ env.mod, }, "F1", hotkeys_popup.show_help,
         { description = "show help", group = "awesome" }),
+
+
+
     awful.key({ env.mod, }, "Left", awful.tag.viewprev,
         { description = "view previous", group = "tag" }),
     awful.key({ env.mod, }, "Right", awful.tag.viewnext,

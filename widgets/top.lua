@@ -7,11 +7,13 @@ local beautiful = require("beautiful")
 local wibox = require("wibox")
 local timer = require("gears.timer")
 
-local redutil = require("redflat.util")
-local system = require("redflat.system")
-local decoration = require("redflat.float.decoration")
-local redtip = require("redflat.float.hotkeys")
+local redutil = require("utilities")
 
+local system = require("utilities.system")
+local decoration = require("themes.decoration")
+
+local screen_width               = screen[mouse.screen].geometry.width
+local screen_height              = screen[mouse.screen].geometry.height
 
 -- Initialize tables for module
 -----------------------------------------------------------------------------------------------------------------------
@@ -37,11 +39,7 @@ top.keys.action = {
 	{
 		{}, "Escape", function() top:hide() end,
 		{ description = "Close top list widget", group = "Action" }
-	},
-	{
-		{ "Mod4" }, "F1", function() redtip:show() end,
-		{ description = "Show hotkeys helper", group = "Action" }
-	},
+	}
 }
 
 top.keys.all = awful.util.table.join(top.keys.management, top.keys.action)
@@ -62,18 +60,18 @@ local function default_style()
 		timeout       = 2,
 		screen_gap    = 0,
 		set_position  = nil,
-		geometry      = { width = 460, height = 380 },
+		geometry      = { width = screen_width/2.5, height = screen_height / 2 },
 		border_margin = { 10, 10, 10, 10 },
 		labels_width  = { num = 30, cpu = 70, mem = 120 },
 		title_height  = 48,
 		list_side_gap = 8,
-		border_width  = 2,
+		border_width  = 10,
 		bottom_height = 80,
 		button_margin = { 140, 140, 22, 22 },
 		keytip        = { geometry = { width = 400 } },
-		title_font    = "Sans 14 bold",
+		title_font    = "Roboto Bold 14",
 		unit          = { { "KB", -1 }, { "MB", 1024 }, { "GB", 1024^2 } },
-		color         = { border = "#575757", text = "#aaaaaa", highlight = "#eeeeee", main = "#b1222b",
+		color         = { border = beautiful.color.bg, text = "#aaaaaa", highlight = beautiful.color.black, main = beautiful.color.orange,
 		                  bg = "#161616", bg_second = "#181818", wibox = "#202020" },
 		shape         = nil
 
@@ -229,7 +227,7 @@ function top:init()
 	self.keygrabber = function(mod, key, event)
 		if     event ~= "press" then return end
 		for _, k in ipairs(self.keys.all) do
-			-- if redutil.key.match_grabber(k, mod, key) then k[3](); return end
+		 if redutil.key.match_grabber(k, mod, key) then k[3](); return end
 		end
 		if string.match("123456789", key) then select_item(tonumber(key)) end
 	end
@@ -344,9 +342,9 @@ function top:show(srt)
 		if self.style.set_position then
 			self.style.set_position(self.wibox)
 		else
-			awful.placement.under_mouse(self.wibox)
+			awful.placement.bottom_right(self.wibox)
 		end
-		--redutil.placement.no_offscreen(self.wibox, self.style.screen_gap, screen[mouse.screen].workarea)
+		redutil.placement.no_offscreen(self.wibox, self.style.screen_gap, screen[mouse.screen].workarea)
 
 		self.wibox.visible = true
 		self.update_timer:start()

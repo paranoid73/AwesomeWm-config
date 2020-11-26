@@ -11,7 +11,7 @@ local core = require("core")
 local util = require("utilities")
 local widg = require("widgets")
 
-
+widg.top:show("mem")
 -------- environment
 ------------------------------------------------------------------------------------
 local env = require("environment")
@@ -36,6 +36,13 @@ local sysmon = {
     backlight = widg.backlight,
     volume = widg.volume,
 }
+
+-- CPU usage
+local ram = {}
+ram.widget = widg.sysmon(
+	{ func = util.system.pformatted.cpu(80) },
+	{ timeout = 2, monitor = { label = "CPU" } }
+)
 
 -- systray
 --local systray = core.systray
@@ -94,7 +101,7 @@ awful.screen.connect_for_each_screen(function(s)
                 layout = wibox.layout.align.horizontal,
                 env.wrapper(sysmon.backlight(), "battery"),
                 env.wrapper(sysmon.battery(), "battery"),
-                env.wrapper(sysmon.volume(), "volume")
+                env.wrapper(sysmon.volume(), "volume"),
             }
         }
 
@@ -113,6 +120,7 @@ awful.screen.connect_for_each_screen(function(s)
         },
         {
             layout = wibox.layout.align.horizontal,
+            env.wrapper(ram.widget, "profile"),
             env.wrapper(tray.widget(), "profile",tray.buttons)
         }
     }
